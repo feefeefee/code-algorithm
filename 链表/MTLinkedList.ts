@@ -72,20 +72,27 @@ class LinkedList<T>{
 
   // 删除
   removeAt(position: number): T | null {
+    //1. 越界的判断
     if (position < 0 || position >= this.size) return null
     
+    // 2.判断是否是删除第一个节点
     let current = this.head
 
     if (position == 0) {
         this.head = current?.next ?? null
     } else {
       const previous = this.getNode(position - 1)
+
+      // 需要给current重新赋值
+      current = previous!.next
+      
+      // 找到需要的节点
       previous!.next = previous?.next?.next ?? null
       
     }
     this.size--
 
-    return current?.value??null
+    return current?.value ?? null
   }
   // 获取方法
   get(position: number): T | null{
