@@ -6,12 +6,16 @@ class MTNode<T> {
   }
 }
 
-class LinkedList<T>{
-  head: MTNode<T> | null = null
-  private size: number = 0
+export  default class LinkedList<T>{
+  private head: MTNode<T> | null = null
+  private length: number = 0
   
-  get length() {
-    return this.size
+  size () {
+    return this.length 
+  }
+
+  peek(): T | undefined {
+    return this.head?.value
   }
   // 封装私有方法
   private getNode(position: number): MTNode<T> | null {
@@ -35,7 +39,7 @@ class LinkedList<T>{
 
       current.next = newNode
     }
-    this.size++
+    this.length++
   }
 
   // 遍历
@@ -52,7 +56,7 @@ class LinkedList<T>{
   }
   // 插入
   insert(value: T, position: number):boolean {
-    if( position < 0 || position > this.size) return false
+    if( position < 0 || position > this.length) return false
     
     const newNode = new MTNode(value)
 
@@ -63,7 +67,7 @@ class LinkedList<T>{
       const previous = this.getNode(position - 1)  
       newNode.next = previous?.next?? null
       previous!.next = newNode
-      this.size++
+      this.length++
     }
 
     return true
@@ -73,7 +77,7 @@ class LinkedList<T>{
   // 删除
   removeAt(position: number): T | null {
     //1. 越界的判断
-    if (position < 0 || position >= this.size) return null
+    if (position < 0 || position >= this.length) return null
     
     // 2.判断是否是删除第一个节点
     let current = this.head
@@ -85,25 +89,25 @@ class LinkedList<T>{
 
       // 需要给current重新赋值
       current = previous!.next
-      
+
       // 找到需要的节点
       previous!.next = previous?.next?.next ?? null
       
     }
-    this.size--
+    this.length--
 
     return current?.value ?? null
   }
   // 获取方法
   get(position: number): T | null{
-    if (position < 0 || position >= this.size) return null
+    if (position < 0 || position >= this.length) return null
     
     return this.getNode(position)?.value ?? null
 
   }
   // 更新方法
   update(value: T, position: number): boolean {
-    if (position < 0 || position >= this.size) return false 
+    if (position < 0 || position >= this.length) return false 
     const currentNode = this.getNode(position)
     currentNode!.value = value
     return true
@@ -127,7 +131,7 @@ class LinkedList<T>{
   }
 
   isEmpty() {
-    return this.size === 0
+    return this.length === 0
   }
 }
 
