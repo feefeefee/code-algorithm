@@ -1,7 +1,10 @@
+/* 
+二叉搜索树
+*/
 import Node from "../types/Node";
 import { btPrint } from "hy-algokit";
 
-class TreeNode<T> extends Node<T> {
+export class TreeNode<T> extends Node<T> {
   left: TreeNode<T> | null = null;
   right: TreeNode<T> | null = null;
 
@@ -15,8 +18,8 @@ class TreeNode<T> extends Node<T> {
   }
 }
 
-class BSTree<T> {
-  private root: TreeNode<T> | null = null;
+export class BSTree<T> {
+  protected root: TreeNode<T> | null = null;
 
   print() {
     btPrint(this.root);
@@ -44,11 +47,19 @@ class BSTree<T> {
 
     return null;
   }
+  // 设计模式：模板模式
+  protected createNode(value: T): TreeNode<T>{
+    
+    // BSTree 调用时就是TreeNode，子类AVLTree重写了，在子类调用时就是AVLTreeNode
+    return new TreeNode(value)
+  }
 
+  // 如何去找到不平衡的节点
+  protected  checkBalance(node: TreeNode<T>) {  }
   //插入数据的操作
-  insert(value: T) {
+  insert(value: T) { 
     //1.根据传入value创建Node（TreeNode）节点
-    const newNode = new TreeNode(value);
+    const newNode = this.createNode(value);
 
     //2.判断当前是否已经有了根节点
     if (!this.root) {
@@ -56,6 +67,9 @@ class BSTree<T> {
     } else {
       this.insertNode(this.root, newNode);
     }
+
+    //3.检测树是否平衡
+    this.checkBalance(newNode)
   }
 
   private insertNode(node: TreeNode<T>, newNode: TreeNode<T>) {
@@ -63,13 +77,15 @@ class BSTree<T> {
       // 去左边查找空白位置
       if (node.left === null) {
         node.left = newNode;
-      } else {
+        newNode.parent = node 
+      } else { 
         this.insertNode(node.left, newNode);
       }
     } else {
-      // 继续去右边查找空把位置
+      // 继续去右边查找空白位置
       if (node.right === null) {
         node.right = newNode;
+        newNode.parent = node
       } else {
         this.insertNode(node.right, newNode);
       }
@@ -82,7 +98,6 @@ class BSTree<T> {
   }
   private preOrderTraverseNode(node: TreeNode<T> | null) {
     if (node) {
-      console.log(node.value);
       this.preOrderTraverseNode(node.left);
       this.preOrderTraverseNode(node.right);
     }
@@ -94,7 +109,6 @@ class BSTree<T> {
   private inOrderTraverseNode(node: TreeNode<T> | null) {
     if (node) {
       this.inOrderTraverseNode(node.left);
-      console.log(node.value);
       this.inOrderTraverseNode(node.right);
     }
   }
@@ -106,7 +120,6 @@ class BSTree<T> {
     if (node) {
       this.postOrderTraverseNode(node.left);
       this.postOrderTraverseNode(node.right);
-      console.log(node.value);
     }
   }
   // 层序遍历
@@ -122,7 +135,6 @@ class BSTree<T> {
     while (queue.length) {
       //3.1 访问节点的过程
       const current = queue.shift()!;
-      console.log(current.value);
 
       //3.2 将左子节点放入队列
       if (current.left) {
@@ -169,12 +181,21 @@ class BSTree<T> {
     // 找到后继节点
     if (successor !== delNode.right) {
       successor!.parent!.left = successor!.right;
-      successor!.right = delNode.right;
+      // successor!.right = delNode.right;
+      if (successor?.right) {
+        successor.right.parent = successor.parent
+      }
+    } else {
+      delNode.right = successor!.right
+      if (successor!.right) {
+        successor!.right.parent = delNode
+      }
+
     }
     console.log("删除节点：", delNode.value, "后继节点：", successor?.value);
 
     // 一定要进行的操作:将删除节点的left，赋值给后继节点的left
-    successor!.left = delNode.left;
+    // successor!.left = delNode.left;
 
     return successor!;
   }
@@ -182,6 +203,8 @@ class BSTree<T> {
     // 搜索当前是否有这个value
     const current = this.searchNode(value);
     if (!current) return false;
+
+    let delNode:TreeNode<T> = current
 
     console.log(
       "当前节点：",
@@ -230,6 +253,11 @@ class BSTree<T> {
     // 5.有2个子节点
     else {
       const successor = this.getSuccessor(current);
+      current.value = successor.value
+
+      delNode = successor
+      this.checkBalance(delNode)
+      return true
       /*       if (current === this.root) {
         this.root = successor
       } else if (current.isLeft) {
@@ -238,7 +266,8 @@ class BSTree<T> {
         current.parent!.right = successor
       }
       */
-      replaceNode = successor;
+      // replaceNode = successor;
+
     }
 
     if (current === this.root) {
@@ -249,16 +278,26 @@ class BSTree<T> {
       current.parent!.right = replaceNode;
     }
 
+    // 判断replaceNode
+    if (replaceNode && current.parent) {
+      replaceNode.parent = current.parent
+    }
+
+
+    // 删除完成后，检测树是否平衡（传入的节点是那个真正从二叉树中被移除的节点）
+    this.checkBalance(delNode)
+
+
     return true;
   }
 }
 
 const bst = new BSTree<number>();
 
-bst.insert(20);
-bst.insert(30);
-bst.insert(18);
+// bst.insert(20);
+// bst.insert(30);
+// bst.insert(18);
 
-bst.print()
+// bst.print()
 
 export {};

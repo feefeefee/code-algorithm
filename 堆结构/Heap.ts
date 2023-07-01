@@ -1,5 +1,5 @@
 import { cbtPrint } from "hy-algokit";
-class Heap<T> {
+export default class Heap<T> {
   // 属性
    data: T[] = [];
   private length: number = 0;
@@ -119,21 +119,21 @@ class Heap<T> {
   }
 }
 
-const arr = [19, 100, 36, 17, 3, 25, 1, 2, 7];
-const heap = new Heap<number>()
-// const heap = new Heap<number>([],false) //创建最小堆
+// const arr = [19, 100, 36, 17, 3, 25, 1, 2, 7];
+// const heap = new Heap<number>()
+// // const heap = new Heap<number>([],false) //创建最小堆
 
-for (const item of arr) {
-  heap.insert(item)
+// for (const item of arr) {
+//   heap.insert(item)
   
-}
-console.log(heap.data)
+// }
+// console.log(heap.data)
 
-heap.insert(133)
-console.log(heap.data)
+// heap.insert(133)
+// console.log(heap.data)
 
-console.log(heap.extract())
-console.log(heap.data)
+// console.log(heap.extract())
+// console.log(heap.data)
 
 // 原地建堆
 // const arrV2 = [9, 11, 20, 56, 23, 45]
@@ -141,4 +141,4 @@ console.log(heap.data)
 // const heapV2 = new Heap<number>(arrV2,false) // 创建最小堆
 // console.log(arrV2)
 // console.log(heapV2.extract())
-heap.print()
+// heap.print()
