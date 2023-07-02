@@ -12,14 +12,18 @@ class AVLTree<T> extends BSTree<T>{
   }
 
   // 如何去找到不平衡的节点
-  checkBalance(node: AVLTreeNode<T>) {
+  checkBalance(node: AVLTreeNode<T>,isAdd = true) {
     let current = node.parent
  
     
     while (current) {
       if (!current.isBalanced) {
         this.rebalance(current)
-        // break
+        // 这个位置是旋转完成后的操作
+        // break 决定不会进一步去查找父节点有没有平衡的情况
+        // 添加的情况是不需要进一步向上查找的，直接break
+        // 删除的情况是需要进一步向上查找的，不能break
+        if(isAdd)  break
       }
       current = current.parent
     }
@@ -73,8 +77,21 @@ const avlTree = new AVLTree<number>()
 // avlTree.insert(50)
 // avlTree.insert(100)
 // avlTree.insert(150)
-for (let i = 0; i<20; i++){
-  avlTree.insert(Math.floor(Math.random() * 200))
+//测试插入时 调整平衡
+const delNums:number[] = []
+for (let i = 0; i < 20; i++){
+  const random = Math.floor(Math.random() * 200)
+  if (i % 2 === 0 && delNums.length < 5) {
+    delNums.push(random)
+  }
+  avlTree.insert(random)
 }
 
+console.log(delNums)
+
+avlTree.print()
+
+for (const delnum of delNums) {
+  avlTree.remove(delnum)
+}
 avlTree.print()

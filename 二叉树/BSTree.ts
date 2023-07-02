@@ -55,7 +55,7 @@ export class BSTree<T> {
   }
 
   // 如何去找到不平衡的节点
-  protected  checkBalance(node: TreeNode<T>) {  }
+  protected  checkBalance(node: TreeNode<T>,isAdd = true) {  }
   //插入数据的操作
   insert(value: T) { 
     //1.根据传入value创建Node（TreeNode）节点
@@ -256,7 +256,7 @@ export class BSTree<T> {
       current.value = successor.value
 
       delNode = successor
-      this.checkBalance(delNode)
+      this.checkBalance(delNode,false)
       return true
       /*       if (current === this.root) {
         this.root = successor
@@ -285,7 +285,7 @@ export class BSTree<T> {
 
 
     // 删除完成后，检测树是否平衡（传入的节点是那个真正从二叉树中被移除的节点）
-    this.checkBalance(delNode)
+    this.checkBalance(delNode,false)
 
 
     return true;
