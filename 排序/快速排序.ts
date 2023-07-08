@@ -7,7 +7,7 @@ function quickSort(arr: number[]): number[]{
   partition(0, arr.length - 1)
   
   function partition(left: number, right: number) {
-    // 递归结束条件
+    // 递归结束条件，如果区域内的数字少于 2 个，退出递归
     if (left >= right) return
     
 
