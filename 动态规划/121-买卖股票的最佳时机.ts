@@ -44,7 +44,7 @@ function maxProfit(prices: number[]): number {
     // dp[i] = prices[i] - minPrice
 
     // 另一种思路
-    dp[i] = Math.max(prices[i] - minPrice,de[i - 1])
+    dp[i] = Math.max(prices[i] - minPrice,dp[i - 1])
     minPrice = Math.min(prices[i], minPrice)
     // console.log('最小值的变化：', minPrice) 
     
@@ -54,3 +54,20 @@ function maxProfit(prices: number[]): number {
 
 
 }
+
+function maxProfitV2(prices: number[]): number {
+  /**
+      dp[i][0]: 第i天持有股票的最大现金
+      dp[i][1]: 第i天不持有股票的最大现金
+   */
+  const length = prices.length;
+  if (length === 0) return 0;
+  const dp: number[][] = [];
+  dp[0] = [-prices[0], 0];
+  for (let i = 1; i < length; i++) {
+      dp[i] = [];
+      dp[i][0] = Math.max(dp[i - 1][0], -prices[i]);
+      dp[i][1] = Math.max(dp[i - 1][0] + prices[i], dp[i - 1][1]);
+  }
+  return dp[length - 1][1];
+};
