@@ -1,72 +1,27 @@
-import ArrayStack from "./MTStack_array";
-
-// 用一个 map 来维护左括号和右括号的对应关系
-const leftToRight = {
-  "(": ")",
-  "[": "]",
-  "{": "}",
-};
-
-/**
- * @param {string} s
- * @return {boolean}
- */
 function isValid(s: string): boolean {
-  // 结合题意，空字符串无条件判断为 true
-  if (!s) {
-    return true;
-  }
-  // 初始化 stack 数组
-  const stack = new ArrayStack<string>();
-  // 缓存字符串长度
-  const len = s.length;
-  // 遍历字符串
-  for (let i = 0; i < len; i++) {
-    // 缓存单个字符
-    const ch = s[i];
-    // 判断是否是左括号，这里我为了实现加速，没有用数组的 includes 方法，直接手写判断逻辑
-    if (ch === "(" || ch === "{" || ch === "[") stack.push(leftToRight[ch]);
-    // 若不是左括号，则必须是和栈顶的左括号相配对的右括号
-    else {
-      // 若栈不为空，且栈顶的左括号没有和当前字符匹配上，那么判为无效
-      if (!stack.isEmpty() && stack.pop() !== ch) {
-        return false;
-      }
-    }
-  }
-  // 若所有的括号都能配对成功，那么最后栈应该是空的
-  return stack.isEmpty();
-}
+  //利用栈的特点，先遍历 把括号压入的栈中，遇到对应的匹配的括号就出栈
+  // 建立一个对应括号的字典
+  // 结果应该是去判断最终栈里是否有残留的括号
 
-console.log(isValid("()"));
-console.log(isValid("([]){}"));
-console.log(isValid("{)"));
-console.log(isValid(""));
-
-// 用原生数组
-function isValid2(s: string): boolean {
-  // 结合题意，空字符串无条件判断为 true
-  if (!s) {
-    return true;
+  // 边界条件
+  if(!s) return true
+  
+  type BracketMap = {
+      [index: string]: string;
   }
-  // 初始化 stack 数组
-  const stack: string[] = [];
-  // 缓存字符串长度
-  const len = s.length;
-  // 遍历字符串
-  for (let i = 0; i < len; i++) {
-    // 缓存单个字符
-    const ch = s[i];
-    // 判断是否是左括号，这里我为了实现加速，没有用数组的 includes 方法，直接手写判断逻辑
-    if (ch === "(" || ch === "{" || ch === "[") stack.push(leftToRight[ch]);
-    // 若不是左括号，则必须是和栈顶的左括号相配对的右括号
-    else {
-      // 若栈不为空，且栈顶的左括号没有和当前字符匹配上，那么判为无效
-      if (!stack.length && stack.pop() !== ch) {
-        return false;
+  
+  let helperStack: string[] = [];
+  let bracketMap: BracketMap = {
+      '(': ')',
+      '[': ']',
+      '{': '}'
+  }
+  for (let i of s) {
+      if (bracketMap.hasOwnProperty(i)) {
+          helperStack.push(bracketMap[i]);
+      } else if (i !== helperStack.pop()) {
+          return false;
       }
-    }
   }
-  // 若所有的括号都能配对成功，那么最后栈应该是空的
-  return !stack.length;
-}
+  return helperStack.length === 0;
+};
